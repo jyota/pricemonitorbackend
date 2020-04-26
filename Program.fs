@@ -15,8 +15,8 @@ open Microsoft.Extensions.Hosting
 
 // Database
 [<Literal>]
-let pricingmonitordb = "Host=127.0.0.1;Port=5433;Username=sa;Password=data1;Database=pricing_monitor_www"
-type PricingMonitorDb = NpgsqlConnection<pricingmonitordb>
+let PricingMonitorDbConnectionString = "Host=127.0.0.1;Port=5433;Username=sa;Password=data1;Database=pricing_monitor_www"
+type PricingMonitorDb = NpgsqlConnection<PricingMonitorDbConnectionString>
 
 
 // ---------------------------------
@@ -25,7 +25,7 @@ type PricingMonitorDb = NpgsqlConnection<pricingmonitordb>
 
 let showUsers = 
     fun (next : HttpFunc) (ctx : HttpContext) ->
-        use cmd = PricingMonitorDb.CreateCommand<"SELECT * FROM public.users">(pricingmonitordb)
+        use cmd = PricingMonitorDb.CreateCommand<"SELECT * FROM public.users">(PricingMonitorDbConnectionString)
         let result = cmd.Execute() in
             json (result |> Seq.map (fun row -> dict["first_name", row.first_name.Value; "email", row.email.Value])) next ctx
 
