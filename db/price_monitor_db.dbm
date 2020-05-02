@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,322" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="sa"
+      superuser="true"
+      createdb="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="data1">
+</role>
+
+<database name="price_monitor_db">
+</database>
+
+<schema name="public" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="md" rect-visible="true" fill-color="#e1e1e1">
+	<role name="sa"/>
+</schema>
+
+<schema name="intake" rect-visible="true" fill-color="#e1e1e1">
+	<role name="sa"/>
+</schema>
+
+<sequence name="url_target_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="intake"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="url_target">
+	<schema name="intake"/>
+	<role name="sa"/>
+	<position x="160" y="123"/>
+	<column name="id" not-null="true" sequence="intake.url_target_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="url" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="target_text" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="requesting_user_id" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_url_target_id" type="pk-constr" table="intake.url_target">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="monitor_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="monitors">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="703" y="364"/>
+	<column name="id" not-null="true" sequence="md.monitor_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="url_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="value_dom_path_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="identifier_dom_path_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="enabled" not-null="true">
+		<type name="boolean"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_monitors" type="pk-constr" table="md.monitors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="url_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="urls">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="360" y="400"/>
+	<column name="id" not-null="true" sequence="md.url_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="url" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_urls" type="pk-constr" table="md.urls">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="dom_paths_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="dom_paths">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="1100" y="343"/>
+	<column name="id" not-null="true" sequence="md.dom_paths_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="path" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_dom_paths" type="pk-constr" table="md.dom_paths">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="price_history_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="price_history">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="1062" y="579"/>
+	<column name="id" not-null="true" sequence="md.price_history_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="price" not-null="true">
+		<type name="numeric" length="6" precision="4"/>
+	</column>
+	<column name="monitor_source_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_price_history" type="pk-constr" table="md.price_history">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="product_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="products">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="680" y="763"/>
+	<column name="id" not-null="true" sequence="md.product_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="product_identifier" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_products" type="pk-constr" table="md.products">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="products_monitors_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="products_monitors">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="680" y="560"/>
+	<column name="id" not-null="true" sequence="md.products_monitors_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="monitor_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="product_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_products_monitors" type="pk-constr" table="md.products_monitors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_url_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.urls" table="md.monitors">
+	<columns names="url_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_value_dom_path_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.dom_paths" table="md.monitors">
+	<columns names="value_dom_path_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_identifier_dom_path_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.dom_paths" table="md.monitors">
+	<columns names="identifier_dom_path_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_price_history_monitors" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.monitors" table="md.price_history">
+	<columns names="monitor_source_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_product_monitors_prod" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.products" table="md.products_monitors">
+	<columns names="product_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_products_monitors_mon" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.monitors" table="md.products_monitors">
+	<columns names="monitor_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_monitors_urls" type="relfk"
+	 src-table="md.monitors"
+	 dst-table="md.urls"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="rel_monitors_dom_paths" type="relfk"
+	 src-table="md.monitors"
+	 dst-table="md.dom_paths"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_price_history_monitors" type="relfk"
+	 src-table="md.price_history"
+	 dst-table="md.monitors"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_products_monitors_products" type="relfk"
+	 src-table="md.products_monitors"
+	 dst-table="md.products"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_products_monitors_monitors" type="relfk"
+	 src-table="md.products_monitors"
+	 dst-table="md.monitors"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
