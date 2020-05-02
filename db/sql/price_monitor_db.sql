@@ -91,8 +91,6 @@ ALTER SEQUENCE md.monitor_seq OWNER TO sa;
 CREATE TABLE md.monitors(
 	id bigint NOT NULL DEFAULT nextval('md.monitor_seq'::regclass),
 	url_id bigint NOT NULL,
-	value_dom_path_id bigint NOT NULL,
-	identifier_dom_path_id bigint NOT NULL,
 	enabled boolean NOT NULL,
 	insert_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	update_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -247,24 +245,68 @@ CREATE TABLE md.products_monitors(
 ALTER TABLE md.products_monitors OWNER TO sa;
 -- ddl-end --
 
+-- object: md.monitors_dom_paths_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS md.monitors_dom_paths_seq CASCADE;
+CREATE SEQUENCE md.monitors_dom_paths_seq
+	INCREMENT BY 1
+	MINVALUE 0
+	MAXVALUE 2147483647
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE md.monitors_dom_paths_seq OWNER TO sa;
+-- ddl-end --
+
+-- object: md.monitors_dom_paths | type: TABLE --
+-- DROP TABLE IF EXISTS md.monitors_dom_paths CASCADE;
+CREATE TABLE md.monitors_dom_paths(
+	id bigint NOT NULL DEFAULT nextval('md.monitors_dom_paths_seq'::regclass),
+	monitor_id bigint NOT NULL,
+	dom_path_id bigint NOT NULL,
+	monitor_dom_target_type_id bigint NOT NULL,
+	insert_time timestamp DEFAULT CURRENT_TIMESTAMP,
+	update_time timestamp DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT pk_monitors_dom_paths PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE md.monitors_dom_paths OWNER TO sa;
+-- ddl-end --
+
+-- object: md.target_types_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS md.target_types_seq CASCADE;
+CREATE SEQUENCE md.target_types_seq
+	INCREMENT BY 1
+	MINVALUE 0
+	MAXVALUE 2147483647
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE md.target_types_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: md.target_types | type: TABLE --
+-- DROP TABLE IF EXISTS md.target_types CASCADE;
+CREATE TABLE md.target_types(
+	id bigint NOT NULL DEFAULT nextval('md.target_types_seq'::regclass),
+	name character varying NOT NULL,
+	insert_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	update_time timestamp DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT pk_target_types PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE md.target_types OWNER TO sa;
+-- ddl-end --
+
 -- object: fk_url_id | type: CONSTRAINT --
 -- ALTER TABLE md.monitors DROP CONSTRAINT IF EXISTS fk_url_id CASCADE;
 ALTER TABLE md.monitors ADD CONSTRAINT fk_url_id FOREIGN KEY (url_id)
 REFERENCES md.urls (id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: fk_value_dom_path_id | type: CONSTRAINT --
--- ALTER TABLE md.monitors DROP CONSTRAINT IF EXISTS fk_value_dom_path_id CASCADE;
-ALTER TABLE md.monitors ADD CONSTRAINT fk_value_dom_path_id FOREIGN KEY (value_dom_path_id)
-REFERENCES md.dom_paths (id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: fk_identifier_dom_path_id | type: CONSTRAINT --
--- ALTER TABLE md.monitors DROP CONSTRAINT IF EXISTS fk_identifier_dom_path_id CASCADE;
-ALTER TABLE md.monitors ADD CONSTRAINT fk_identifier_dom_path_id FOREIGN KEY (identifier_dom_path_id)
-REFERENCES md.dom_paths (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
@@ -286,6 +328,27 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ALTER TABLE md.products_monitors DROP CONSTRAINT IF EXISTS fk_products_monitors_mon CASCADE;
 ALTER TABLE md.products_monitors ADD CONSTRAINT fk_products_monitors_mon FOREIGN KEY (monitor_id)
 REFERENCES md.monitors (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_monitor_dom_paths_monitor | type: CONSTRAINT --
+-- ALTER TABLE md.monitors_dom_paths DROP CONSTRAINT IF EXISTS fk_monitor_dom_paths_monitor CASCADE;
+ALTER TABLE md.monitors_dom_paths ADD CONSTRAINT fk_monitor_dom_paths_monitor FOREIGN KEY (monitor_id)
+REFERENCES md.monitors (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_monitor_dom_paths_dp | type: CONSTRAINT --
+-- ALTER TABLE md.monitors_dom_paths DROP CONSTRAINT IF EXISTS fk_monitor_dom_paths_dp CASCADE;
+ALTER TABLE md.monitors_dom_paths ADD CONSTRAINT fk_monitor_dom_paths_dp FOREIGN KEY (dom_path_id)
+REFERENCES md.dom_paths (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_monitor_dom_target_type | type: CONSTRAINT --
+-- ALTER TABLE md.monitors_dom_paths DROP CONSTRAINT IF EXISTS fk_monitor_dom_target_type CASCADE;
+ALTER TABLE md.monitors_dom_paths ADD CONSTRAINT fk_monitor_dom_target_type FOREIGN KEY (monitor_dom_target_type_id)
+REFERENCES md.target_types (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
