@@ -13,27 +13,43 @@ open FSharp.Data.Npgsql
 open Microsoft.Extensions.Hosting
 
 
+[<CLIMutable>]
+type MonitorRequest =
+    {
+        Id : int64
+        Url : string
+        TargetText : string
+    }
+
 // Database
 [<Literal>]
-let PricingMonitorDbConnectionString = "Host=127.0.0.1;Port=5433;Username=sa;Password=data1;Database=pricing_monitor_www"
+let PricingMonitorDbConnectionString = "Host=127.0.0.1;Port=5433;Username=sa;Password=data1;Database=pricing_monitor_db"
 type PricingMonitorDb = NpgsqlConnection<PricingMonitorDbConnectionString>
 
 
 // ---------------------------------
 // Web app
 // ---------------------------------
-
-let showUsers = 
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        use cmd = PricingMonitorDb.CreateCommand<"SELECT * FROM public.users">(PricingMonitorDbConnectionString)
-        let result = cmd.Execute() in
-            json (result |> Seq.map (fun row -> dict["first_name", row.first_name.Value; "email", row.email.Value])) next ctx
+let handleMonitorRequest (monitorRequest : MonitorRequest) =
+    use conn = new Npgsql.NpgsqlConnection(PricingMonitorDbConnectionString)
+    conn.Open()
+    use tx = conn.BeginTransaction()
+    use cmd = new NpgsqlCommand<"
+        INSERT INTO intake.url_target (url, target_text, requesting_user_id)
+        VALUES(@url, @target_text, 0)
+        RETURNING id", PricingMonitorDbConnectionString>(conn, tx)
+    let t = cmd.Execute(url = monitorRequest.Url, target_text = monitorRequest.TargetText)
+    tx.Commit()
+    let result = {Id = t.Head; Url = monitorRequest.Url; TargetText = monitorRequest.TargetText}
+    printfn "%s" (result.ToString())
+    Successful.OK result
+    
 
 let webApp =
     choose [
-        GET >=>
+        POST >=>
             choose [
-                route "/users" >=> showUsers
+                route "/api/pricing/v1/monitors" >=> bindJson<MonitorRequest> handleMonitorRequest 
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
