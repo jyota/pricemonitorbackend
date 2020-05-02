@@ -11,15 +11,7 @@ open Microsoft.Extensions.DependencyInjection
 open Giraffe
 open FSharp.Data.Npgsql
 open Microsoft.Extensions.Hosting
-
-
-[<CLIMutable>]
-type MonitorRequest =
-    {
-        Id : int64
-        Url : string
-        TargetText : string
-    }
+open PriceMonitorBackend.Models
 
 // Database
 [<Literal>]
@@ -43,13 +35,13 @@ let handleMonitorRequest (monitorRequest : MonitorRequest) =
     let result = {Id = t.Head; Url = monitorRequest.Url; TargetText = monitorRequest.TargetText}
     printfn "%s" (result.ToString())
     Successful.OK result
-    
+
 
 let webApp =
     choose [
         POST >=>
             choose [
-                route "/api/pricing/v1/monitors" >=> bindJson<MonitorRequest> handleMonitorRequest 
+                route "/api/pricing/v1/monitors" >=> bindJson<MonitorRequest> handleMonitorRequest
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
