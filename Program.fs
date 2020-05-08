@@ -27,12 +27,12 @@ let handleMonitorRequest (monitorRequest : MonitorRequest) =
     conn.Open()
     use tx = conn.BeginTransaction()
     use cmd = new NpgsqlCommand<"
-        INSERT INTO intake.url_target (url, target_text, requesting_user_id)
-        VALUES(@url, @target_text, 0)
+        INSERT INTO intake.url_target (url, target_price, requesting_user_id)
+        VALUES(@url, @target_price, @requesting_user_id)
         RETURNING id", PricingMonitorDbConnectionString>(conn, tx)
-    let t = cmd.Execute(url = monitorRequest.Url, target_text = monitorRequest.TargetText)
+    let t = cmd.Execute(url = monitorRequest.Url, target_price = monitorRequest.TargetPrice, requesting_user_id = monitorRequest.RequestingUserId)
     tx.Commit()
-    let result = {Id = t.Head; Url = monitorRequest.Url; TargetText = monitorRequest.TargetText; MonitorRequestActions = [||]}
+    let result = {Id = t.Head; Url = monitorRequest.Url; TargetPrice = monitorRequest.TargetPrice; RequestingUserId = monitorRequest.RequestingUserId; MonitorRequestActions = [||]}
     printfn "%s" (result.ToString())
     Successful.OK result
 

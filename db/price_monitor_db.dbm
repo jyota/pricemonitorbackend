@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,99" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,360" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <role name="sa"
       superuser="true"
@@ -40,18 +40,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="url_target">
 	<schema name="intake"/>
 	<role name="sa"/>
-	<position x="160" y="120"/>
+	<position x="120" y="63"/>
 	<column name="id" not-null="true" sequence="intake.url_target_seq">
 		<type name="bigint"/>
 	</column>
 	<column name="url" not-null="true">
 		<type name="text"/>
 	</column>
-	<column name="target_text" not-null="true">
-		<type name="character varying"/>
+	<column name="target_price" not-null="true">
+		<type name="numeric" length="6" precision="2"/>
 	</column>
 	<column name="requesting_user_id" not-null="true">
-		<type name="integer"/>
+		<type name="bigint"/>
 	</column>
 	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
 		<type name="timestamp"/>
@@ -170,7 +170,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="bigint"/>
 	</column>
 	<column name="price" not-null="true">
-		<type name="numeric" length="6" precision="4"/>
+		<type name="numeric" length="6" precision="2"/>
 	</column>
 	<column name="monitor_source_id" not-null="true">
 		<type name="bigint"/>
@@ -197,7 +197,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="products">
 	<schema name="md"/>
 	<role name="sa"/>
-	<position x="680" y="760"/>
+	<position x="680" y="900"/>
 	<column name="id" not-null="true" sequence="md.product_seq">
 		<type name="bigint"/>
 	</column>
@@ -317,6 +317,283 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
+<sequence name="url_target_actions_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="intake"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="url_target_actions">
+	<schema name="intake"/>
+	<role name="sa"/>
+	<position x="540" y="80"/>
+	<column name="id" not-null="true" sequence="intake.url_target_actions_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="action_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_trigger_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_trigger_threshold" not-null="true">
+		<type name="numeric" length="6" precision="4"/>
+	</column>
+	<column name="threshold_type_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_target_text" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="url_target_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_intake_url_target_trigger" type="pk-constr" table="intake.url_target_actions">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="monitor_trigger_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="monitor_trigger">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="380" y="620"/>
+	<column name="id" not-null="true" sequence="md.monitor_trigger_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="action_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_trigger_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_trigger_amount" not-null="true">
+		<type name="numeric" length="6" precision="2"/>
+	</column>
+	<column name="threshold_unit_id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="target_url_id">
+		<type name="bigint"/>
+	</column>
+	<column name="target_email_id">
+		<type name="bigint"/>
+	</column>
+	<column name="owning_user_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_monitor_trigger" type="pk-constr" table="md.monitor_trigger">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="email_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="emails">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="380" y="860"/>
+	<column name="id" not-null="true" sequence="md.email_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="verified" not-null="true" default-value="false">
+		<type name="boolean"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_email" type="pk-constr" table="md.emails">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="users_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="users">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="1080" y="860"/>
+	<column name="id" not-null="true" sequence="md.users_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="user_info" not-null="true">
+		<type name="jsonb"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_users" type="pk-constr" table="md.users">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="user_monitor_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="user_monitors">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="1080" y="720"/>
+	<column name="id" not-null="true" sequence="md.user_monitor_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="monitor_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="user_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_user_monitors" type="pk-constr" table="md.user_monitors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="actions_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="actions">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="40" y="640"/>
+	<column name="id" not-null="true" sequence="md.actions_seq">
+		<type name="smallint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_actions" type="pk-constr" table="md.actions">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="action_triggers_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="sa"/>
+</sequence>
+
+<table name="action_triggers">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="40" y="780"/>
+	<column name="id" not-null="true" sequence="md.action_triggers_seq">
+		<type name="smallint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_action_trigger" type="pk-constr" table="md.action_triggers">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="action_thresholds_seq"
+	 start="1" increment="1"
+	 min-value="0" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="md"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="action_thresholds">
+	<schema name="md"/>
+	<role name="sa"/>
+	<position x="20" y="920"/>
+	<column name="id" not-null="true" sequence="md.action_thresholds_seq">
+		<type name="smallint"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="character varying"/>
+	</column>
+	<column name="insert_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<column name="update_time" not-null="true" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp"/>
+	</column>
+	<constraint name="pk_action_thresholds" type="pk-constr" table="md.action_thresholds">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_intake_user_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.users" table="intake.url_target">
+	<columns names="requesting_user_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
 <constraint name="fk_url_id" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.urls" table="md.monitors">
 	<columns names="url_id" ref-type="src-columns"/>
@@ -359,6 +636,78 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="fk_intake_trigger_url_target" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="intake.url_target" table="intake.url_target_actions">
+	<columns names="url_target_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_intake_target_actions_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.actions" table="intake.url_target_actions">
+	<columns names="action_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_intake_target_action_triggers_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.action_triggers" table="intake.url_target_actions">
+	<columns names="action_trigger_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_intake_target_actions_threshold_type_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.action_thresholds" table="intake.url_target_actions">
+	<columns names="threshold_type_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_target_url_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.urls" table="md.monitor_trigger">
+	<columns names="target_url_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_target_email_id" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.emails" table="md.monitor_trigger">
+	<columns names="target_email_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_trigger_owning_user" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.users" table="md.monitor_trigger">
+	<columns names="owning_user_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_trigger_actions" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.actions" table="md.monitor_trigger">
+	<columns names="action_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_trigger_action_trigger" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.action_triggers" table="md.monitor_trigger">
+	<columns names="action_trigger_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_monitor_trigger_thresholds" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.action_thresholds" table="md.monitor_trigger">
+	<columns names="threshold_unit_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_user_monitors_monitor" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.monitors" table="md.user_monitors">
+	<columns names="monitor_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_user_monitor_user" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="md.users" table="md.user_monitors">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
 <relationship name="rel_monitors_urls" type="relfk"
 	 src-table="md.monitors"
 	 dst-table="md.urls"
@@ -396,6 +745,71 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <relationship name="rel_monitors_dom_paths_target_types" type="relfk"
 	 src-table="md.monitors_dom_paths"
 	 dst-table="md.target_types"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_url_target_actions_url_target" type="relfk"
+	 src-table="intake.url_target_actions"
+	 dst-table="intake.url_target"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_urls" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.urls"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_emails" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.emails"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_monitors_monitors" type="relfk"
+	 src-table="md.user_monitors"
+	 dst-table="md.monitors"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_monitors_users" type="relfk"
+	 src-table="md.user_monitors"
+	 dst-table="md.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_users" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_url_target_users" type="relfk"
+	 src-table="intake.url_target"
+	 dst-table="md.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_actions" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.actions"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_action_triggers" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.action_triggers"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_monitor_trigger_action_thresholds" type="relfk"
+	 src-table="md.monitor_trigger"
+	 dst-table="md.action_thresholds"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_url_target_actions_actions" type="relfk"
+	 src-table="intake.url_target_actions"
+	 dst-table="md.actions"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_url_target_actions_action_triggers" type="relfk"
+	 src-table="intake.url_target_actions"
+	 dst-table="md.action_triggers"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_url_target_actions_action_thresholds" type="relfk"
+	 src-table="intake.url_target_actions"
+	 dst-table="md.action_thresholds"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>
