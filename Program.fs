@@ -32,7 +32,7 @@ let handleMonitorRequest (monitorRequest : MonitorRequest) =
         RETURNING id", PricingMonitorDbConnectionString>(conn, tx)
     let t = cmd.Execute(url = monitorRequest.Url, target_text = monitorRequest.TargetText)
     tx.Commit()
-    let result = {Id = t.Head; Url = monitorRequest.Url; TargetText = monitorRequest.TargetText}
+    let result = {Id = t.Head; Url = monitorRequest.Url; TargetText = monitorRequest.TargetText; MonitorRequestActions = [||]}
     printfn "%s" (result.ToString())
     Successful.OK result
 
