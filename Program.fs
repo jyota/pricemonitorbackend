@@ -31,6 +31,22 @@ let handleMonitorRequest (monitorRequest : MonitorRequest) =
         VALUES(@url, @target_price, @requesting_user_id)
         RETURNING id", PricingMonitorDbConnectionString>(conn, tx)
     let t = cmd.Execute(url = monitorRequest.Url, target_price = monitorRequest.TargetPrice, requesting_user_id = monitorRequest.RequestingUserId)
+    if not (isNull monitorRequest.MonitorRequestActions) then 
+        monitorRequest.MonitorRequestActions
+        |> Array.map (fun mr -> 
+                        printfn "Doing things"
+                        use cmd = new NpgsqlCommand<"
+                            INSERT INTO intake.url_target_actions (action_id, action_trigger_id, action_trigger_threshold,
+                                                                   threshold_type_id, action_target_text, url_target_id)
+                            VALUES(@action_id, @action_trigger_id, @action_trigger_threshold, @threshold_type_id,
+                                   @action_target_text, @url_target_id)", PricingMonitorDbConnectionString>(conn, tx)
+                        cmd.Execute(action_id = mr.ActionId, 
+                                    action_trigger_id = mr.ActionTriggerId,
+                                    action_trigger_threshold = mr.ActionTriggerThreshold,
+                                    threshold_type_id = mr.ThresholdTypeId,
+                                    action_target_text = mr.ActionTargetText,
+                                    url_target_id = t.Head))
+        |> ignore
     tx.Commit()
     let result = {Id = t.Head; Url = monitorRequest.Url; TargetPrice = monitorRequest.TargetPrice; RequestingUserId = monitorRequest.RequestingUserId; MonitorRequestActions = [||]}
     printfn "%s" (result.ToString())

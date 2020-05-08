@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,360" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <role name="sa"
       superuser="true"
@@ -339,7 +339,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="smallint"/>
 	</column>
 	<column name="action_trigger_threshold" not-null="true">
-		<type name="numeric" length="6" precision="4"/>
+		<type name="numeric" length="6" precision="2"/>
 	</column>
 	<column name="threshold_type_id" not-null="true">
 		<type name="smallint"/>

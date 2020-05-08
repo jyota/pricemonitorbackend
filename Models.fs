@@ -5,10 +5,10 @@ module PriceMonitorBackend.Models
 type MonitorRequestAction =
     {
         Id : int64
-        ActionId : int
-        ActionTriggerId : int
+        ActionId : int16
+        ActionTriggerId : int16
         ActionTriggerThreshold : decimal
-        ThresholdTypeId : int
+        ThresholdTypeId : int16
         ActionTargetText : string
     }
 

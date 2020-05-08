@@ -323,7 +323,7 @@ CREATE TABLE intake.url_target_actions(
 	id bigint NOT NULL DEFAULT nextval('intake.url_target_actions_seq'::regclass),
 	action_id smallint NOT NULL,
 	action_trigger_id smallint NOT NULL,
-	action_trigger_threshold numeric(6,4) NOT NULL,
+	action_trigger_threshold numeric(6,2) NOT NULL,
 	threshold_type_id smallint NOT NULL,
 	action_target_text character varying NOT NULL,
 	url_target_id bigint NOT NULL,
