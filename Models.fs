@@ -6,6 +6,9 @@ type MonitorRequestAction =
     {
         Id : int64
         Action : string
+        ActionTrigger : string
+        ActionTriggerThreshold : string
+        ThresholdType : string
         TargetText : string
     }
 
